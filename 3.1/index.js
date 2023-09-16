@@ -1,21 +1,31 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const express = require('express')
+const fs = require('fs')
+const path = require('path')
 
-const app = express();
+const app = express()
 
-const dataFilePath = path.join(__dirname, './persons.json');
+const dataFilePath = path.join(__dirname, './persons.json')
 
 // Read data from the file
 const readData = () => {
     try {
-      const rawData = fs.readFileSync(dataFilePath, 'utf8');
+      const rawData = fs.readFileSync(dataFilePath, 'utf8')
       return JSON.parse(rawData);
     } catch (error) {
-      console.error('Error reading or parsing data:', error);
-      return [];
+      console.error('Error reading or parsing data:', error)
+      return []
     }
-  };
+  }
+
+  const saveData = (data) => {
+    try {
+        const stringifiedData = JSON.stringify(data, null, 2)
+        fs.writeFileSync(dataFilePath, stringifiedData)
+    } catch (error) {
+        console.error('Error writing data:', error)
+    }
+}
+
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
@@ -42,7 +52,17 @@ app.get('/api/persons', (request, response) => {
     } else {
         response.status(404).send({ error: 'Person not found' });
     }
-});
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const data= readData()
+    persons = data.filter(p=> p.id !== id)
+
+        saveData(persons)
+        response.status(204).end()
+   
+  })
 
 
 // Start the server
