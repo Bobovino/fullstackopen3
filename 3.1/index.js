@@ -21,6 +21,14 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
 
+app.get('/info', (request, response) => {
+    const count=readData().length
+    const date=new Date().toString()
+    response.send(`<p><h1>Phonebook has info for ${count} people</h1> <br/>
+                    <span>${date}</span>
+                </p>`)
+  })
+
 app.get('/api/persons', (request, response) => {
     response.json(readData())
   })
