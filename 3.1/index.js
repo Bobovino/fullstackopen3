@@ -33,6 +33,18 @@ app.get('/api/persons', (request, response) => {
     response.json(readData())
   })
 
+  app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id); 
+    const person =readData().find(p => p.id === id);
+
+    if (person) {
+        response.json(person);
+    } else {
+        response.status(404).send({ error: 'Person not found' });
+    }
+});
+
+
 // Start the server
 const PORT = 3001;
 app.listen(PORT, () => {
